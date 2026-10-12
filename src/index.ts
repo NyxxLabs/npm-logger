@@ -8,7 +8,8 @@ const colors = {
     yellow: "\x1b[33m",
     red: "\x1b[31m",
     magenta: "\x1b[35m",
-    cyan: "\x1b[36m"
+    cyan: "\x1b[36m",
+    grey: "\x1b[90m"
 } as const;
 
 const stripAnsi = (text: string): string => {
@@ -19,18 +20,21 @@ export interface LoggerOptions {
     debug?: boolean;
     timestamp?: boolean;
     logFile?: string;
+    prefix?: string;
 }
 
 export class Logger {
     private isDebugEnable: boolean;
     private showTimestamp: boolean;
     private logFilePath?: string;
+    private prefix?: string;
     private timers: Map<string, number> = new Map();
 
     constructor(options: LoggerOptions = {}) {
         this.isDebugEnable = options.debug ?? true;
         this.showTimestamp = options.timestamp ?? true;
         this.logFilePath = options.logFile;
+        this.prefix = options.prefix;
     }
 
     private getTimestamp(): string {
@@ -44,17 +48,34 @@ export class Logger {
         if (!this.logFilePath) return;
 
         try {
-            const cleanMessage = stripAnsi(message) + "\n";
+            const cleanMessage = stripAnsi(message) + "\n\n";
             fs.appendFileSync(this.logFilePath, cleanMessage, "utf-8");
         } catch (err) {
             console.error("Error writing to the log file:", err);
         }
     }
 
+    child(prefix: string): Logger {
+        return new Logger({
+            prefix: this.prefix ? `${this.prefix}:${prefix}` : prefix,
+            debug: this.isDebugEnable,
+            timestamp: this.showTimestamp,
+            logFile: this.logFilePath
+        });
+    }
+
     private log(prefix: string, color: string, ...args: unknown[]): void {
         const time = this.getTimestamp();
         const badge = `${color}[${prefix}]${colors.reset}`;
-        const terminalOutput = `${time}${badge} ${args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')}`;
+
+        let childPrefix;
+        if (this.prefix) {
+            childPrefix = `${colors.grey}[${this.prefix}]${colors.reset}`;
+        } else {
+            childPrefix = "";
+        }
+
+        const terminalOutput = `${time}${badge}${childPrefix} ${args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')}`;
         console.log(terminalOutput);
 
         this.writeToFile(terminalOutput);
