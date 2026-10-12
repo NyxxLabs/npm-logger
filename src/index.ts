@@ -7,7 +7,8 @@ const colors = {
     green: "\x1b[32m",
     yellow: "\x1b[33m",
     red: "\x1b[31m",
-    magenta: "\x1b[35m"
+    magenta: "\x1b[35m",
+    cyan: "\x1b[36m"
 } as const;
 
 const stripAnsi = (text: string): string => {
@@ -45,7 +46,7 @@ export class Logger {
         try {
             const cleanMessage = stripAnsi(message) + "\n";
             fs.appendFileSync(this.logFilePath, cleanMessage, "utf-8");
-        } catch(err) {
+        } catch (err) {
             console.error("Error writing to the log file:", err);
         }
     }
@@ -94,7 +95,20 @@ export class Logger {
 
         const duration = (performance.now() - startTime).toFixed(2);
         this.timers.delete(label);
-        this.log("TIME", colors.blue, `${label}: ${duration}ms`);
+        this.log("TIME", colors.cyan, `${label}: ${duration}ms`);
+    }
+
+    /* Log File */
+    clearLog(): void {
+        if (!this.logFilePath) return;
+        let filePath = this.logFilePath;
+
+        try {
+            const file = fs.readFileSync(filePath);
+            fs.unlinkSync(filePath)
+        } catch (err) {
+            return;
+        }
     }
 }
 
