@@ -6,7 +6,11 @@
     "logger"
   ],
   "license": "MIT",
-  "author": "SimplyNyx",
+  "author": {
+    "name": "SimplyNyx (NyxLabs)",
+    "email": "dev.nyxielys@gmail.com",
+    "url": "https://github.com/SimplyNyx"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -19,5 +23,13 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "typescript": "^7.0.2"
+  },
+  "homepage": "https://github.com/NyxxLabs/npm-logger",
+  "bugs": {
+    "url": "https://github.com/NyxxLabs/npm-logger/issues"
+  },
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/NyxxLabs/npm-logger"
   }
 }
