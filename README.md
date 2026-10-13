@@ -98,3 +98,5 @@ What is returned:
 [12:49:46][INFO][DB] DB child
 [12:49:46][INFO][DB:TEST] DB:TEST child
 ```
+## Our Discord
+- [Discord](https://discord.gg/2x9juZp9VX)
