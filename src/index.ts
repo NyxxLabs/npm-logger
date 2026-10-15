@@ -102,7 +102,6 @@ export class Logger {
         this.log("DEBUG", colors.magenta, ...args);
     }
 
-    /* TIMER */
     timer(label: string): void {
         this.timers.set(label, performance.now());
     }
@@ -119,7 +118,6 @@ export class Logger {
         this.log("TIME", colors.cyan, `${label}: ${duration}ms`);
     }
 
-    /* Log File */
     clearLog(): void {
         if (!this.logFilePath) return;
         let filePath = this.logFilePath;
