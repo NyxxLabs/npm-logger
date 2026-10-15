@@ -20,11 +20,11 @@ logger.debug("Debug message");
 
 What is returned:
 ```
-[12:32:22][INFO] Information
-[12:32:22][WARN] Warning
-[12:32:22][SUCCESS] Success
-[12:32:22][ERROR] Error
-[12:32:22][DEBUG] Debug message
+[THU-OCT-15][12:32:22][INFO] Information
+[THU-OCT-15][12:32:22][WARN] Warning
+[THU-OCT-15][12:32:22][SUCCESS] Success
+[THU-OCT-15][12:32:22][ERROR] Error
+[THU-OCT-15][12:32:22][DEBUG] Debug message
 ```
 
 ## Change parameters
@@ -34,7 +34,8 @@ You can modify the module settings as follows:
 const { Logger } = require('@nyx-labs/logger');
 const logger = new Logger({
     debug: false,
-    timestamp: false,
+    showTime: false,
+    showDate: false,
     logFile: "./optionnal", // If there is a log file, all logs will be recorded in it.
 })
 ```
@@ -69,17 +70,18 @@ logger.timerEnd("example");
 
 What is returned:
 ```
-[12:44:20][INFO] Information
-[12:44:20][WARN] Warning
-[12:44:20][SUCCESS] Success
-[12:44:20][ERROR] Error
-[12:44:20][DEBUG] Debug message
-[12:44:20][TIME] example: 8.66ms
+[THU-OCT-15][12:44:20][INFO] Information
+[THU-OCT-15][12:44:20][WARN] Warning
+[THU-OCT-15][12:44:20][SUCCESS] Success
+[THU-OCT-15][12:44:20][ERROR] Error
+[THU-OCT-15][12:44:20][DEBUG] Debug message
+[THU-OCT-15][12:44:20][TIME] example: 8.66ms
 ```
 ### logger.child("child_name")
 You can create some children for your logger. Here is an example:
 ```JavaScript
-const { logger } = require('@nyx-labs/logger');
+const { Logger } = require('@nyx-labs/logger');
+const logger = new Logger({ showDate: false })
 logger.info("No child");
 
 const dbLogger = logger.child("DB");
