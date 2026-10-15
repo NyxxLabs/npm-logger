@@ -18,7 +18,8 @@ const stripAnsi = (text: string): string => {
 
 export interface LoggerOptions {
     debug?: boolean;
-    timestamp?: boolean;
+    showTime?: boolean;
+    showDate?: boolean;
     logFile?: string;
     prefix?: string;
 }
@@ -26,13 +27,15 @@ export interface LoggerOptions {
 export class Logger {
     private isDebugEnable: boolean;
     private showTimestamp: boolean;
+    private isDateEnable: boolean;
     private logFilePath?: string;
     private prefix?: string;
     private timers: Map<string, number> = new Map();
 
     constructor(options: LoggerOptions = {}) {
         this.isDebugEnable = options.debug ?? true;
-        this.showTimestamp = options.timestamp ?? true;
+        this.showTimestamp = options.showTime ?? true;
+        this.isDateEnable = options.showDate ?? true;
         this.logFilePath = options.logFile;
         this.prefix = options.prefix;
     }
@@ -42,6 +45,16 @@ export class Logger {
         const now = new Date();
         const time = now.toTimeString().split(" ")[0];
         return `${colors.dim}[${time}]${colors.reset}`;
+    }
+
+    private getDate(): string {
+        if (!this.isDateEnable) return "";
+        const now = new Date();
+        const stringDate = now.toDateString();
+        var formatedDate = stringDate.toUpperCase();
+        var dateTable = formatedDate.split(" ");
+        formatedDate = `${colors.dim}[${dateTable[0]}-${dateTable[1]}-${dateTable[2]}]${colors.reset}`;
+        return formatedDate;
     }
 
     private writeToFile(message: string): void {
@@ -59,13 +72,15 @@ export class Logger {
         return new Logger({
             prefix: this.prefix ? `${this.prefix}:${prefix}` : prefix,
             debug: this.isDebugEnable,
-            timestamp: this.showTimestamp,
+            showTime: this.showTimestamp,
+            showDate: this.isDateEnable,
             logFile: this.logFilePath
         });
     }
 
     private log(prefix: string, color: string, ...args: unknown[]): void {
         const time = this.getTimestamp();
+        const date = this.getDate();
         const badge = `${color}[${prefix}]${colors.reset}`;
 
         let childPrefix;
@@ -75,7 +90,7 @@ export class Logger {
             childPrefix = "";
         }
 
-        const terminalOutput = `${time}${badge}${childPrefix} ${args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')}`;
+        const terminalOutput = `${date}${time}${badge}${childPrefix} ${args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')}`;
         console.log(terminalOutput);
 
         this.writeToFile(terminalOutput);
